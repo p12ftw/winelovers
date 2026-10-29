@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nisses vintips</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Nisses noteringar om varje släpp i Systembolagets tillfälliga sortiment: alla viner, bra köp och kommentarer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: en smal läskolumn — släppväljare överst, Nisses inledning, sedan vinlistan grupperad per typ som en provningslista. */
+:root {
+  --bg: #f3f4f0;
+  --surface: #fbfbf8;
+  --ink: #1d221f;
+  --muted: #5d665f;
+  --line: #d9ddd5;
+  --accent: #2f5b45;      /* buteljgrönt */
+  --accent-ink: #ffffff;
+  --seal: #a8741c;        /* "Bra köp"-stämpel */
+  --seal-bg: #f5ead2;
+  --red: #7d2236;
+  --white: #b59a3a;
+  --sparkle: #6e7f8c;
+  --other: #8a6a4f;
+  --focus: #2f5b45;
+  --display: "Young Serif", Georgia, "Times New Roman", serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161a18; --surface: #1d2220; --ink: #e8ebe6; --muted: #9aa49c; --line: #303833;
+    --accent: #7fb898; --accent-ink: #0f1512; --seal: #e0b25c; --seal-bg: #3a2f1a;
+    --red: #d1798b; --white: #d8c27a; --sparkle: #a7b6c2; --other: #c9a588; --focus: #7fb898;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161a18; --surface: #1d2220; --ink: #e8ebe6; --muted: #9aa49c; --line: #303833;
+  --accent: #7fb898; --accent-ink: #0f1512; --seal: #e0b25c; --seal-bg: #3a2f1a;
+  --red: #d1798b; --white: #d8c27a; --sparkle: #a7b6c2; --other: #c9a588; --focus: #7fb898;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 16px/1.5 var(--body);
+}
+[hidden] { display: none !important; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+.wrap {
+  max-width: 880px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Huvud */
+header.site { padding-block: 28px 8px; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 20px; }
+.brand { font: 400 clamp(30px, 6vw, 44px)/1.05 var(--display); margin: 0; letter-spacing: -0.01em; }
+.brand small { display: block; font: 500 13px/1.4 var(--body); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 8px; }
+.account { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 500;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.quiet { background: transparent; }
+.btn:disabled { opacity: .55; cursor: default; }
+
+.banner { margin-top: 16px; padding: 10px 14px; border: 1px dashed var(--line); border-radius: 8px; font-size: 14px; color: var(--muted); }
+
+/* Inloggning */
+.login { margin-top: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; display: grid; gap: 10px; max-width: 460px; }
+.login label { font-size: 14px; font-weight: 600; }
+.login .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.login input { flex: 1 1 220px; min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.login p { margin: 0; font-size: 14px; color: var(--muted); }
+
+/* Släppväljare */
+nav.releases { margin-top: 24px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.rel {
+  flex: 0 0 auto; cursor: pointer; text-align: left;
+  border: 1px solid var(--line); background: transparent; border-radius: 10px; padding: 8px 14px;
+  display: grid; gap: 0;
+}
+.rel .d { font: 400 18px/1.2 var(--display); }
+.rel .m { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rel[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.rel[aria-current="true"] .m { color: inherit; opacity: .75; }
+
+/* Släppets rubrik */
+section.release-head { padding-block: 28px 8px; display: grid; gap: 14px; }
+.release-head h2 { margin: 0; font: 400 clamp(24px, 4.5vw, 32px)/1.15 var(--display); text-wrap: balance; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.facts b { color: var(--ink); font-weight: 600; }
+.intro { max-width: 65ch; font-size: 17px; line-height: 1.6; margin: 0; white-space: pre-line; }
+.intro.empty { color: var(--muted); font-style: italic; font-size: 15px; }
+.intro-edit { display: grid; gap: 6px; max-width: 65ch; }
+.intro-edit label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--surface); line-height: 1.5;
+}
+.saved { font-size: 12px; color: var(--muted); min-height: 1em; }
+
+/* Verktygsrad */
+.tools {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding-block: 12px; display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { cursor: pointer; border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip .n { opacity: .7; font-variant-numeric: tabular-nums; margin-left: 4px; }
+.chip.seal[aria-pressed="true"] { background: var(--seal); border-color: var(--seal); color: var(--surface); }
+.tools .grow { flex: 1 1 160px; min-width: 0; }
+.tools input[type="search"], .tools select {
+  width: 100%; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 14px;
+}
+.tools select { width: auto; }
+
+/* Vinlistan */
+.group { padding-block: 20px 4px; }
+.group h3 {
+  margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px;
+  font: 600 13px/1.3 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.group h3::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--dot, var(--other)); align-self: center; }
+.group[data-cat="Rött"] { --dot: var(--red); }
+.group[data-cat="Vitt"] { --dot: var(--white); }
+.group[data-cat="Mousserande"] { --dot: var(--sparkle); }
+.group[data-cat="Rosé"] { --dot: #c9788a; }
+
+ol.wines { list-style: none; margin: 0; padding: 0; }
+li.wine {
+  display: grid; gap: 4px 16px; padding-block: 14px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "main price" "note note";
+  border-top: 1px solid var(--line);
+}
+li.wine:first-child { border-top: 0; }
+.w-main { grid-area: main; min-width: 0; display: grid; gap: 2px; }
+.w-name { font-weight: 600; font-size: 16px; line-height: 1.35; }
+.w-name a { color: inherit; text-decoration: none; }
+.w-name a:hover { text-decoration: underline; text-decoration-color: var(--muted); }
+.w-meta { font-size: 14px; color: var(--muted); }
+.w-meta .nr { font-family: var(--mono); font-size: 12.5px; }
+.w-price { grid-area: price; text-align: right; display: grid; gap: 2px; justify-items: end; align-content: start; }
+.w-price .p { font: 500 17px/1.2 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.w-price .s { font-size: 12.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.w-note { grid-area: note; display: grid; gap: 8px; }
+.w-note .comment { margin: 4px 0 0; max-width: 65ch; font-size: 15px; line-height: 1.55; white-space: pre-line; }
+.w-note .comment::before { content: "Nisse: "; font-weight: 600; color: var(--accent); }
+
+.seal {
+  display: inline-flex; align-items: center; gap: 5px; width: fit-content;
+  font: 700 11px/1 var(--body); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--seal); background: var(--seal-bg); border: 1px solid var(--seal);
+  padding: 5px 8px 4px; border-radius: 4px; transform: rotate(-1.5deg);
+}
+li.wine.good .w-name::after { content: ""; }
+
+.edit-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toggle-good { cursor: pointer; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 10px; font-size: 13px; font-weight: 600; }
+.toggle-good[aria-pressed="true"] { background: var(--seal-bg); border-color: var(--seal); color: var(--seal); }
+.sb-link { font-size: 13px; }
+
+.empty-state { padding-block: 40px; color: var(--muted); text-align: center; }
+
+footer { padding-block: 40px; font-size: 13px; color: var(--muted); }
+footer p { margin: 0 0 6px; max-width: 65ch; }
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 999px; font-size: 14px; z-index: 20;
+}
+
+@media (max-width: 560px) {
+  li.wine { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "price" "note"; }
+  .w-price { text-align: left; justify-items: start; grid-auto-flow: column; gap: 12px; align-items: baseline; }
+  .tools select { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <div class="top">
+      <h1 class="brand">Nisses vintips<small>Tillfälligt sortiment, släpp för släpp</small></h1>
+      <div class="account" id="account"></div>
+    </div>
+    <div class="banner" id="demoBanner" hidden>Demoläge: inloggning är inte uppsatt ännu, så redigeringen sparas bara i den här webbläsaren.</div>
+    <form class="login" id="loginForm" hidden>
+      <label for="loginEmail">Logga in med e-post</label>
+      <div class="row">
+        <input id="loginEmail" type="email" autocomplete="email" placeholder="namn@exempel.se" required>
+        <button class="btn primary" type="submit" id="loginSend">Skicka inloggningslänk</button>
+      </div>
+      <p id="loginMsg">Du får ett mejl med en länk. Klicka på den så är du inloggad.</p>
+    </form>
+    <nav class="releases" id="releases" aria-label="Välj släpp"></nav>
+  </header>
+
+  <main id="main">
+    <section class="release-head" id="releaseHead"></section>
+    <div class="tools" id="tools" hidden>
+      <div class="chips" id="catChips" role="group" aria-label="Typ"></div>
+      <button class="chip seal" id="onlyGood" aria-pressed="false" type="button">Bara bra köp<span class="n" id="goodCount"></span></button>
+      <div class="grow"><input type="search" id="q" placeholder="Sök vin, producent, land" aria-label="Sök"></div>
+      <select id="sort" aria-label="Sortera">
+        <option value="cat">Sortera: typ</option>
+        <option value="price">Pris, lägst först</option>
+        <option value="price-desc">Pris, högst först</option>
+        <option value="country">Land</option>
+      </select>
+    </div>
+    <div id="list"></div>
+  </main>
+
+  <footer>
+    <p>Vinlistan följer Systembolagets tillfälliga sortiment. Varje vin länkar till Systembolaget, där du köper och ser aktuellt lager. Priser kan ändras.</p>
+    <p>Bra köp och kommentarer är Nisses egna.</p>
+  </footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script>
+(() => {
+const CFG = Object.assign({ SUPABASE_URL: "", SUPABASE_ANON_KEY: "", DATA_URLS: ["releases.json"] }, window.NVT_CONFIG || {});
+const LIVE = !!(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY);
+const SUPABASE_ESM = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm";
+const DOCX_ESM = "https://cdn.jsdelivr.net/npm/docx@9.0.2/+esm";
+const CAT_ORDER = ["Mousserande", "Vitt", "Rosé", "Rött", "Sött", "Starkvin"];
+const MONTHS = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+const MON_SHORT = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
+const DAYS = ["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const kr = (n) => n == null ? "" : Number(n).toLocaleString("sv-SE") + " kr";
+const parseDate = (s) => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const longDate = (s) => { const d = parseDate(s); return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; };
+const sbUrl = (artnr) => `https://www.systembolaget.se/${encodeURIComponent(String(artnr).replace(/\s/g, ""))}`;
+
+const state = {
+  releases: {}, dates: [], current: null,
+  notes: {}, intro: "", // för aktuellt släpp
+  cat: "Alla", onlyGood: false, q: "", sort: "cat",
+  user: null, isEditor: false, editing: false,
+};
+
+// ---------- Lagring ----------
+let sb = null;
+const store = {
+  async init() {
+    if (!LIVE) {
+      $("demoBanner").hidden = false;
+      return;
+    }
+    const mod = await import(SUPABASE_ESM);
+    sb = mod.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, { auth: { persistSession: true, detectSessionInUrl: true } });
+    const { data } = await sb.auth.getSession();
+    await this.setUser(data.session?.user || null);
+    sb.auth.onAuthStateChange(async (_e, session) => {
+      const u = session?.user || null;
+      if ((u && u.id) !== (state.user && state.user.id)) { await this.setUser(u); renderAccount(); render(); }
+    });
+  },
+  async setUser(u) {
+    state.user = u; state.isEditor = false;
+    if (u && sb) {
+      const { data, error } = await sb.from("editors").select("email").eq("email", (u.email || "").toLowerCase()).maybeSingle();
+      state.isEditor = !error && !!data;
+    }
+    state.editing = state.isEditor;
+  },
+  demoKey: "nvt-demo-v1",
+  demoAll() { try { return JSON.parse(localStorage.getItem(this.demoKey) || "{}"); } catch { return {}; } },
+  demoPut(all) { try { localStorage.setItem(this.demoKey, JSON.stringify(all)); return true; } catch { return false; } },
+  async load(date) {
+    if (!LIVE) {
+      const r = this.demoAll()[date] || {};
+      return { notes: r.notes || {}, intro: r.intro || "" };
+    }
+    const [w, r] = await Promise.all([
+      sb.from("wine_notes").select("artnr,good_buy,comment").eq("release_date", date),
+      sb.from("release_notes").select("intro").eq("release_date", date).maybeSingle(),
+    ]);
+    const notes = {};
+    (w.data || []).forEach(n => { notes[n.artnr] = { good: !!n.good_buy, comment: n.comment || "" }; });
+    return { notes, intro: r.data?.intro || "" };
+  },
+  async saveWine(date, artnr, note) {
+    if (!LIVE) {
+      const all = this.demoAll(); all[date] = all[date] || {}; all[date].notes = all[date].notes || {};
+      all[date].notes[artnr] = note; return this.demoPut(all);
+    }
+    const { error } = await sb.from("wine_notes").upsert({
+      release_date: date, artnr: String(artnr), good_buy: !!note.good, comment: note.comment || null, updated_at: new Date().toISOString(),
+    });
+    if (error) throw error; return true;
+  },
+  async saveIntro(date, text) {
+    if (!LIVE) {
+      const all = this.demoAll(); all[date] = all[date] || {}; all[date].intro = text; return this.demoPut(all);
+    }
+    const { error } = await sb.from("release_notes").upsert({ release_date: date, intro: text || null, updated_at: new Date().toISOString() });
+    if (error) throw error; return true;
+  },
+  async login(email) {
+    const { error } = await sb.auth.signInWithOtp({
+      email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname },
+    });
+    if (error) throw error;
+  },
+  async logout() { if (sb) await sb.auth.signOut(); },
+};
+
+// ---------- Data ----------
+async function loadReleases() {
+  for (const url of CFG.DATA_URLS) {
+    try {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) continue;
+      const json = await res.json();
+      if (json && typeof json === "object") return json;
+    } catch (e) { /* prova nästa */ }
+  }
+  throw new Error("Kunde inte hämta vinlistan.");
+}
+
+function pickDefault(dates) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const horizon = new Date(today); horizon.setDate(horizon.getDate() + 6);
+  const withWines = dates.filter(d => (state.releases[d].wines || []).length);
+  const candidates = withWines.filter(d => parseDate(d) <= horizon);
+  return candidates[candidates.length - 1] || withWines[withWines.length - 1] || dates[dates.length - 1];
+}
+
+// ---------- Render ----------
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, 2200);
+}
+
+function renderAccount() {
+  const a = $("account");
+  if (!LIVE) {
+    a.innerHTML = `<button class="btn ${state.editing ? "primary" : ""}" id="demoEdit" type="button">${state.editing ? "Klar med redigering" : "Prova redigera"}</button>`;
+    $("demoEdit").onclick = () => { state.editing = !state.editing; renderAccount(); render(); };
+    a.insertAdjacentHTML("beforeend", exportButtonHTML());
+    bindExport();
+    return;
+  }
+  if (!state.user) {
+    a.innerHTML = `<button class="btn quiet" id="loginBtn" type="button">Logga in</button>`;
+    $("loginBtn").onclick = () => { $("loginForm").hidden = !$("loginForm").hidden; if (!$("loginForm").hidden) $("loginEmail").focus(); };
+    return;
+  }
+  $("loginForm").hidden = true;
+  const name = esc(state.user.email);
+  a.innerHTML = state.isEditor
+    ? `<span>Inloggad som ${name}</span>${exportButtonHTML()}<button class="btn quiet" id="logoutBtn" type="button">Logga ut</button>`
+    : `<span>${name} har inte redigeringsbehörighet.</span><button class="btn quiet" id="logoutBtn" type="button">Logga ut</button>`;
+  $("logoutBtn").onclick = async () => { await store.logout(); toast("Utloggad"); };
+  bindExport();
+}
+
+function exportButtonHTML() { return `<button class="btn" id="exportBtn" type="button">Exportera till Word</button>`; }
+function bindExport() { const b = $("exportBtn"); if (b) b.onclick = () => exportDocx(b); }
+
+function renderReleases() {
+  const nav = $("releases");
+  nav.innerHTML = state.dates.slice().reverse().map(d => {
+    const r = state.releases[d]; const dt = parseDate(d);
+    const n = (r.wines || []).length;
+    return `<button class="rel" type="button" data-date="${d}" aria-current="${d === state.current}">
+      <span class="d">${dt.getDate()} ${MON_SHORT[dt.getMonth()]}</span>
+      <span class="m">${n ? n + " viner" : "Kommer snart"}</span></button>`;
+  }).join("");
+  nav.querySelectorAll(".rel").forEach(b => b.onclick = () => selectRelease(b.dataset.date));
+  const cur = nav.querySelector('[aria-current="true"]');
+  if (cur) cur.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
+function wines() { return (state.releases[state.current]?.wines) || []; }
+function note(artnr) { return state.notes[artnr] || { good: false, comment: "" }; }
+
+function renderHead() {
+  const r = state.releases[state.current]; const ws = wines();
+  const dt = parseDate(state.current);
+  const goods = ws.filter(w => note(w.artnr).good).length;
+  const commented = ws.filter(w => note(w.artnr).comment).length;
+  const prices = ws.map(w => w.price).filter(Boolean);
+  const range = prices.length ? `${Math.min(...prices)}–${Math.max(...prices)} kr` : "";
+  const introBlock = state.editing
+    ? `<div class="intro-edit"><label for="introText">Nisses inledning</label>
+        <textarea id="introText" rows="3" placeholder="Vad ska man hålla utkik efter i det här släppet?">${esc(state.intro)}</textarea>
+        <span class="saved" id="introSaved"></span></div>`
+    : (state.intro ? `<p class="intro">${esc(state.intro)}</p>`
+                   : `<p class="intro empty">${ws.length ? "Nisse har inte skrivit något om det här släppet än." : ""}</p>`);
+  $("releaseHead").innerHTML = `
+    <h2>Säljstart ${DAYS[dt.getDay()]} ${longDate(state.current)}</h2>
+    <div class="facts">
+      ${ws.length ? `<span><b>${ws.length}</b> viner</span><span>${range}</span>` : `<span>Vinlistan är inte klar än.</span>`}
+      ${goods ? `<span><b>${goods}</b> bra köp</span>` : ""}
+      ${commented ? `<span><b>${commented}</b> kommenterade</span>` : ""}
+    </div>
+    ${introBlock}`;
+  const ta = $("introText");
+  if (ta) {
+    let t;
+    ta.oninput = () => { $("introSaved").textContent = ""; clearTimeout(t); t = setTimeout(() => saveIntro(ta.value), 900); };
+    ta.onblur = () => { clearTimeout(t); if (ta.value !== state.intro) saveIntro(ta.value); };
+  }
+}
+
+async function saveIntro(text) {
+  const date = state.current;
+  try { await store.saveIntro(date, text); if (date === state.current) { state.intro = text; const s = $("introSaved"); if (s) s.textContent = "Sparat"; } }
+  catch (e) { toast("Kunde inte spara: " + (e.message || e)); }
+}
+
+function renderTools() {
+  const ws = wines(); $("tools").hidden = !ws.length;
+  const counts = {}; ws.forEach(w => counts[w.cat] = (counts[w.cat] || 0) + 1);
+  const cats = ["Alla", ...CAT_ORDER.filter(c => counts[c]), ...Object.keys(counts).filter(c => !CAT_ORDER.includes(c))];
+  if (!cats.includes(state.cat)) state.cat = "Alla";
+  $("catChips").innerHTML = cats.map(c => `<button type="button" class="chip" data-cat="${esc(c)}" aria-pressed="${c === state.cat}">${esc(c)}<span class="n">${c === "Alla" ? ws.length : counts[c]}</span></button>`).join("");
+  $("catChips").querySelectorAll(".chip").forEach(b => b.onclick = () => { state.cat = b.dataset.cat; renderTools(); renderList(); });
+  const goods = ws.filter(w => note(w.artnr).good).length;
+  $("goodCount").textContent = goods;
+  $("onlyGood").setAttribute("aria-pressed", state.onlyGood);
+}
+
+function filtered() {
+  const q = state.q.trim().toLowerCase();
+  let ws = wines().filter(w =>
+    (state.cat === "Alla" || w.cat === state.cat) &&
+    (!state.onlyGood || note(w.artnr).good) &&
+    (!q || [w.name, w.producer, w.country, w.region, w.artnr, note(w.artnr).comment].join(" ").toLowerCase().includes(q)));
+  const byName = (a, b) => a.name.localeCompare(b.name, "sv");
+  const s = state.sort;
+  if (s === "price") ws.sort((a, b) => a.price - b.price || byName(a, b));
+  else if (s === "price-desc") ws.sort((a, b) => b.price - a.price || byName(a, b));
+  else if (s === "country") ws.sort((a, b) => (a.country || "").localeCompare(b.country || "", "sv") || a.price - b.price);
+  else ws.sort((a, b) => a.price - b.price || byName(a, b));
+  return ws;
+}
+
+function wineHTML(w) {
+  const n = note(w.artnr);
+  const meta = [esc(w.producer), esc([w.region, w.country].filter(Boolean).join(", ")), w.cl && w.cl !== 75 ? `${w.cl} cl` : ""].filter(Boolean).join(" · ");
+  let noteHTML = "";
+  if (state.editing) {
+    noteHTML = `<div class="edit-row">
+        <button type="button" class="toggle-good" data-artnr="${esc(w.artnr)}" aria-pressed="${n.good}">${n.good ? "✓ Bra köp" : "Markera bra köp"}</button>
+        <span class="saved" data-saved="${esc(w.artnr)}"></span>
+      </div>
+      <textarea data-comment="${esc(w.artnr)}" rows="2" aria-label="Kommentar om ${esc(w.name)}" placeholder="Kommentar">${esc(n.comment)}</textarea>`;
+  } else {
+    noteHTML = (n.good ? `<span class="seal">Bra köp</span>` : "") + (n.comment ? `<p class="comment">${esc(n.comment)}</p>` : "");
+  }
+  return `<li class="wine${n.good ? " good" : ""}">
+    <div class="w-main">
+      <div class="w-name"><a href="${sbUrl(w.artnr)}" target="_blank" rel="noopener">${esc(w.name)}</a></div>
+      <div class="w-meta">${meta}</div>
+      <div class="w-meta"><span class="nr">Nr ${esc(w.artnr)}</span>${w.bottles ? ` · ${Number(w.bottles).toLocaleString("sv-SE")} flaskor` : ""} · <a class="sb-link" href="${sbUrl(w.artnr)}" target="_blank" rel="noopener">Systembolaget ↗</a></div>
+    </div>
+    <div class="w-price"><span class="p">${kr(w.price)}</span></div>
+    ${noteHTML ? `<div class="w-note">${noteHTML}</div>` : ""}
+  </li>`;
+}
+
+function renderList() {
+  const list = $("list"); const ws = filtered();
+  if (!wines().length) { list.innerHTML = `<p class="empty-state">Vinerna i det här släppet läggs upp när listan är klar.</p>`; return; }
+  if (!ws.length) { list.innerHTML = `<p class="empty-state">${state.onlyGood ? "Inga bra köp markerade med de här filtren." : "Inga viner matchar."}</p>`; return; }
+  if (state.sort === "cat") {
+    const groups = {}; ws.forEach(w => (groups[w.cat] = groups[w.cat] || []).push(w));
+    const order = [...CAT_ORDER.filter(c => groups[c]), ...Object.keys(groups).filter(c => !CAT_ORDER.includes(c))];
+    list.innerHTML = order.map(c => `<section class="group" data-cat="${esc(c)}"><h3>${esc(c)} <span>${groups[c].length}</span></h3><ol class="wines">${groups[c].map(wineHTML).join("")}</ol></section>`).join("");
+  } else {
+    list.innerHTML = `<section class="group"><ol class="wines">${ws.map(wineHTML).join("")}</ol></section>`;
+  }
+  if (state.editing) bindEditors(list);
+}
+
+function bindEditors(root) {
+  root.querySelectorAll(".toggle-good").forEach(b => b.onclick = async () => {
+    const a = b.dataset.artnr; const n = { ...note(a), good: !note(a).good };
+    await saveWine(a, n);
+    b.setAttribute("aria-pressed", n.good); b.textContent = n.good ? "✓ Bra köp" : "Markera bra köp";
+    b.closest("li").classList.toggle("good", n.good);
+    renderTools(); renderHead();
+  });
+  root.querySelectorAll("textarea[data-comment]").forEach(ta => {
+    let t; const a = ta.dataset.comment;
+    const flush = () => { clearTimeout(t); if (ta.value !== note(a).comment) saveWine(a, { ...note(a), comment: ta.value }); };
+    ta.oninput = () => { clearTimeout(t); t = setTimeout(flush, 900); };
+    ta.onblur = flush;
+  });
+}
+
+async function saveWine(artnr, n) {
+  const date = state.current;
+  try {
+    await store.saveWine(date, artnr, n);
+    if (date !== state.current) return;
+    state.notes[artnr] = n;
+    const s = document.querySelector(`[data-saved="${CSS.escape(String(artnr))}"]`); if (s) { s.textContent = "Sparat"; setTimeout(() => s.textContent = "", 1500); }
+  } catch (e) { toast("Kunde inte spara: " + (e.message || e)); }
+}
+
+function render() { renderReleases(); renderHead(); renderTools(); renderList(); }
+
+async function selectRelease(date) {
+  state.current = date;
+  try { if (location.hash.slice(1) !== date) history.replaceState(null, "", "#" + date); } catch {}
+  render(); // visa listan direkt, noteringar fylls på
+  try {
+    const data = await store.load(date);
+    if (date !== state.current) return;
+    state.notes = data.notes; state.intro = data.intro;
+  } catch (e) { state.notes = {}; state.intro = ""; toast("Kunde inte hämta Nisses noteringar."); }
+  render();
+}
+
+// ---------- Export till Word ----------
+async function exportDocx(btn) {
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "Skapar dokument…";
+  try {
+    const D = await import(DOCX_ESM);
+    const date = state.current; const ws = wines().slice();
+    const n = (w) => note(w.artnr);
+    const FONT = "Calibri";
+    const t = (text, o = {}) => new D.TextRun({ text: String(text ?? ""), font: FONT, ...o });
+    const link = (text, url) => new D.ExternalHyperlink({ link: url, children: [t(text, { style: "Hyperlink", color: "2F5B45", underline: {} })] });
+    const para = (children, o = {}) => new D.Paragraph({ children: Array.isArray(children) ? children : [children], spacing: { after: 80 }, ...o });
+    const border = { style: D.BorderStyle.SINGLE, size: 4, color: "D9DDD5" };
+    const borders = { top: border, bottom: border, left: border, right: border };
+    const COLS = [3400, 1700, 900, 900, 2560]; // vin, ursprung, pris, bra köp, kommentar  (summa 9460 dxa)
+    const cell = (children, w, shade) => new D.TableCell({
+      borders, width: { size: w, type: D.WidthType.DXA },
+      shading: shade ? { fill: shade, type: D.ShadingType.CLEAR, color: "auto" } : undefined,
+      margins: { top: 60, bottom: 60, left: 100, right: 100 },
+      children: Array.isArray(children) ? children : [children],
+    });
+    const headRow = new D.TableRow({ tableHeader: true, children: ["Vin", "Ursprung", "Pris", "Bra köp", "Kommentar"].map((h, i) =>
+      cell(para(t(h, { bold: true, size: 18 })), COLS[i], "E8ECE6")) });
+    const wineRow = (w) => new D.TableRow({ children: [
+      cell([para(link(w.name, sbUrl(w.artnr))), para(t(`${w.producer || ""} · nr ${w.artnr}`, { size: 16, color: "5D665F" }))], COLS[0]),
+      cell(para(t([w.region, w.country].filter(Boolean).join(", "), { size: 18 })), COLS[1]),
+      cell(para(t(kr(w.price), { size: 18 })), COLS[2]),
+      cell(para(t(n(w).good ? "✓" : "", { bold: true, color: "A8741C" })), COLS[3]),
+      cell(para(t(n(w).comment, { size: 18 })), COLS[4]),
+    ] });
+
+    const children = [
+      new D.Paragraph({ heading: D.HeadingLevel.HEADING_1, children: [t(`Tillfälligt sortiment ${longDate(date)}`)] }),
+      para(t(`${ws.length} viner · exporterat ${new Date().toLocaleDateString("sv-SE")} från Nisses vintips`, { color: "5D665F", size: 18 })),
+    ];
+    if (state.intro) children.push(para(t(state.intro)));
+
+    const goods = ws.filter(w => n(w).good).sort((a, b) => a.price - b.price);
+    children.push(new D.Paragraph({ heading: D.HeadingLevel.HEADING_2, children: [t(`Bra köp (${goods.length})`)] }));
+    if (!goods.length) children.push(para(t("Inga markerade.", { italics: true, color: "5D665F" })));
+    goods.forEach(w => {
+      children.push(new D.Paragraph({ bullet: { level: 0 }, spacing: { after: 40 }, children: [
+        link(w.name, sbUrl(w.artnr)), t(`  ${kr(w.price)} · ${w.producer || ""} · ${[w.region, w.country].filter(Boolean).join(", ")}`, { color: "5D665F" }),
+      ] }));
+      if (n(w).comment) children.push(para(t(n(w).comment, { italics: true }), { indent: { left: 720 } }));
+    });
+
+    const groups = {}; ws.forEach(w => (groups[w.cat] = groups[w.cat] || []).push(w));
+    const order = [...CAT_ORDER.filter(c => groups[c]), ...Object.keys(groups).filter(c => !CAT_ORDER.includes(c))];
+    children.push(new D.Paragraph({ heading: D.HeadingLevel.HEADING_2, children: [t("Hela släppet")] }));
+    order.forEach(c => {
+      children.push(new D.Paragraph({ heading: D.HeadingLevel.HEADING_3, children: [t(`${c} (${groups[c].length})`)] }));
+      children.push(new D.Table({
+        width: { size: 9460, type: D.WidthType.DXA }, columnWidths: COLS,
+        rows: [headRow, ...groups[c].sort((a, b) => a.price - b.price).map(wineRow)],
+      }));
+    });
+
+    const doc = new D.Document({
+      creator: "Nisses vintips", title: `Tillfälligt sortiment ${longDate(date)}`,
+      styles: { default: { document: { run: { font: FONT, size: 21 } } } },
+      sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } }, children }],
+    });
+    const blob = await D.Packer.toBlob(doc);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `nisses-vintips-${date}.docx`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast("Word-filen är nedladdad");
+  } catch (e) {
+    console.error(e); toast("Exporten misslyckades: " + (e.message || e));
+  } finally { btn.disabled = false; btn.textContent = label; }
+}
+
+// ---------- Start ----------
+$("onlyGood").onclick = () => { state.onlyGood = !state.onlyGood; renderTools(); renderList(); };
+$("q").oninput = (e) => { state.q = e.target.value; renderList(); };
+$("sort").onchange = (e) => { state.sort = e.target.value; renderList(); };
+$("loginForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const email = $("loginEmail").value.trim(); const btn = $("loginSend");
+  btn.disabled = true;
+  try { await store.login(email); $("loginMsg").textContent = `Klart. Kolla mejlen hos ${email} och klicka på länken.`; }
+  catch (err) { $("loginMsg").textContent = "Det gick inte att skicka länken. Kontrollera adressen, eller be Oscar lägga till dig som redaktör."; }
+  finally { btn.disabled = false; }
+};
+window.addEventListener("hashchange", () => {
+  const h = location.hash.slice(1);
+  if (state.releases[h] && h !== state.current) selectRelease(h);
+});
+
+(async () => {
+  try {
+    const [rel] = await Promise.all([loadReleases(), store.init().catch(e => { console.error(e); toast("Inloggningen kunde inte startas."); })]);
+    state.releases = rel; state.dates = Object.keys(rel).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+    renderAccount();
+    const h = location.hash.slice(1);
+    await selectRelease(state.releases[h] ? h : pickDefault(state.dates));
+  } catch (e) {
+    $("releaseHead").innerHTML = `<p class="empty-state">${esc(e.message)} Ladda om sidan om en stund.</p>`;
+  }
+})();
+})();
+</script>
+</body>
+</html>
